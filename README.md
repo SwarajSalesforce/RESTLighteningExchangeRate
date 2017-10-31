@@ -48,3 +48,11 @@ public class httpCallOutCtrl {
 		return resultsMap;
 	}
 }
+
+In above apex class controller we have a getCalloutResponseContents @AuraEnabled class method with one parameter url as string type. And the Return type is Map type where String is key and object as value of the Map.
+
+In getCalloutResponseContents Method ,first we created a new HTTP object. and set the EndPoint url with url parameter.
+
+In the url parameter we set url from lightning component js controller.
+
+and when the HttpResponse come from callout, Deserialize the JSON string into the Map collection and return the map.
