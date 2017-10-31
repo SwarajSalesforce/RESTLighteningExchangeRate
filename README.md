@@ -63,13 +63,13 @@ and when the HttpResponse come from callout, Deserialize the JSON string into th
    <aura:attribute name="response" type="Map"/>
    <aura:attribute name="ListOfCurrency" type="String[]"/>
  
-   <div class="slds-m-around--medium">
+   \\<div class="slds-m-around--medium">
       <!--Header part-->
-      <div class="slds-page-header" role="banner">
-         <div class="slds-media__body">
-            <p class="slds-page-header__title slds-truncate" title="foreign exchange rates">foreign exchange rates By HTTP Callouts</p>
-            <button class="slds-button slds-button--brand" onclick="{!c.calloutCtrl}">Make CallOut</button>  
-         </div>
+      \\<div class="slds-page-header" role="banner">
+        \\ <div class="slds-media__body">
+          \\  <p class="slds-page-header__title slds-truncate" title="foreign exchange rates">foreign exchange rates By HTTP Callouts</p>
+          \\  <button class="slds-button slds-button--brand" onclick="{!c.calloutCtrl}">Make CallOut</button>  
+         \\</div>
       </div>
       <!--Header part close-->
       <h3 class="slds-section-title--divider"> Base : {!v.response.base}</h3>
