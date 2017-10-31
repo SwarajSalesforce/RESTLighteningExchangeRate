@@ -56,3 +56,84 @@ In getCalloutResponseContents Method ,first we created a new HTTP object. and se
 In the url parameter we set url from lightning component js controller.
 
 and when the HttpResponse come from callout, Deserialize the JSON string into the Map collection and return the map.
+
+## Step 3 :  Create Lightning Component
+
+<aura:component controller="httpCallOutCtrl">
+   <aura:attribute name="response" type="Map"/>
+   <aura:attribute name="ListOfCurrency" type="String[]"/>
+ 
+   <div class="slds-m-around--medium">
+      <!--Header part-->
+      <div class="slds-page-header" role="banner">
+         <div class="slds-media__body">
+            <p class="slds-page-header__title slds-truncate" title="foreign exchange rates">foreign exchange rates By HTTP Callouts</p>
+            <button class="slds-button slds-button--brand" onclick="{!c.calloutCtrl}">Make CallOut</button>  
+         </div>
+      </div>
+      <!--Header part close-->
+      <h3 class="slds-section-title--divider"> Base : {!v.response.base}</h3>
+      <h3 class="slds-section-title--divider"> Date : {!v.response.date}</h3>
+      <!--iterate the list of Currency-->    
+      <ul class="slds-list--dotted">
+         <aura:iteration items="{!v.ListOfCurrency}" var="rateLst">
+            <li>{!rateLst}</li>
+         </aura:iteration>
+      </ul>
+   </div>
+</aura:component>
+
+In above Lightning component we are use two aura:attribute one is type of map and one is type of array of String
+
+JS controller
+
+({
+    calloutCtrl: function(component, event, helper) {
+        // Rates are quoted against the Euro by default. 
+        // Quote against a different currency by setting the base parameter in your request.        
+        var base = 'USD';
+        helper.getResponse(component, base);
+    },
+    
+  JS Helper
+ 
+({
+    getResponse: function(component, base) {
+        // create a server side action.       
+        var action = component.get("c.getCalloutResponseContents");
+        // set the url parameter for getCalloutResponseContents method (to use as endPoint) 
+        action.setParams({
+            "url": 'http://api.fixer.io/latest?base=' + base
+        });
+        action.setCallback(this, function(response) {
+            var state = response.getState();
+            if (component.isValid() && state === "SUCCESS") {
+                // set the response(return Map<String,object>) to response attribute.      
+                component.set("v.response", response.getReturnValue());
+ 
+                // get the all rates from map by using key              
+                var getAllRates = component.get("v.response")['rates'];
+                var CurrencyList = [];
+                // play a loop on rates object 
+                for (var key in getAllRates) {
+                    // push all rates with there Name in CurrencyList variable.        
+                    CurrencyList.push(key + ' = ' + getAllRates[key]); // i.e : INR = 67.919  
+                }
+                // set the CurrencyList to ListOfCurrency attribute on component.           
+                component.set("v.ListOfCurrency", CurrencyList);
+            }
+        });
+ 
+        $A.enqueueAction(action);
+    },
+})
+ 
+})
+
+Lightning App:ExchangeRateApp
+
+<aura:application extends="force:slds">
+   <c:SampleComponent/>
+  <!-- here c: is org. namespace prefix-->
+</aura:application>
+ 
